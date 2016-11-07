@@ -27,7 +27,7 @@ our $VERSION = '1.00';
     my $library = Local::MusicLibrary->new(options => [...]); # Output options
     
     $library->add_data(...); # Adds new record to our library
-    $library->print();       # Print table of all records in our library
+    $library->print();       # Prints table of all records in our library
 
 =cut
 

@@ -52,25 +52,25 @@ B<Options>:
 =over 4
 
 =item B<--help>
-    Print a brief help message and exits.
+    Print a brief help message and exit.
 
 =item B<--band>
-    Will be print only this band's tracks
+    Will be printed only this band's tracks
 
 =item B<--year>
-    Will be print only this year's albums
+    Will be printed only this year's albums
 
 =item B<--album>
-    Will be print only this album's tracks
+    Will be printed only this album's tracks
 
 =item B<--track>
-    Will be print only this tracks
+    Will be printed only this tracks
 
 =item B<--format>
-    Will be print only this format's tracks
+    Will be printed only this format's tracks
 
 =item B<--sort>
-    Sorting table by this column
+    Sort table by this column
     columns: band, year, album, track, format
 
 =item B<--columns>

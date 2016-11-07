@@ -9,7 +9,7 @@ BEGIN {if($]<5.018){package experimental; use warnings::register;}} no warnings 
 
 =head1 NAME
 
-Local::Record - music library module, that storing one-string data
+Local::Record - music library module storing one track data
 
 =head1 VERSION
 
