@@ -7,6 +7,7 @@ use Local::Iterator::Array;
 
 my $array = [1, undef, 3];
 my $iterator = Local::Iterator::Array->new(array => $array);
+
 my ($next, $end);
 
 ($next, $end) = $iterator->next();

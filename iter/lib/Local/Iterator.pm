@@ -20,6 +20,13 @@ Version 1.00
 our $VERSION = '2.00';
 
 =head1 SYNOPSIS
+	
+	#Local::Iterator::Any is instance of Local::Iterator
+	my $iterator = Local::Iterator::Any->new( array => [1,2,3] );
+	
+	$iterator->array(); #Array of elements
+	$iterator->next();  #Next element
+	$iterator->all();   #Returns link to array of all last values
 
 =cut
 

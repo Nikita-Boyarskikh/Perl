@@ -9,16 +9,16 @@ use lib "$FindBin::Bin/../lib";
 use Local::MusicLibrary;
 BEGIN {if($]<5.018){package experimental; use warnings::register;}} no warnings 'experimental';
 
-my ($band, $year, $album, $track, $format, $sort, $help, $man, $col);
-GetOptions("band:s" => \$band, "year:s" => \$year, "album:s" => \$album, "track:s" => \$track, "format:s" => \$format,
-"sort:s" => \$sort, "columns:s" => \$col, man => \$man, help => \$help) or die "Переданы неверные параметры! Используйте --help\n";
-pod2usage(-verbose => 2) if $man;
-pod2usage(1) if $help;
-my $librury = Local::MusicLibrary->new(options => [$band, $year, $album, $track, $format, $sort, $col]);
+my %options;
+GetOptions(\%options, "band:s", "year:s", "album:s", "track:s", "format:s",
+"sort:s", "columns:s", "man", "help") or die "Переданы неверные параметры! Используйте --help\n";
+pod2usage(-verbose => 2) if $options{man};
+pod2usage(1) if $options{help};
+Local::MusicLibrary->setopt(%options);
 while (<>) {
-	$librury->add_data($_);
+	Local::MusicLibrary->add_data($_);
 }
-$librury->print;
+Local::MusicLibrary->print;
 
 
 __END__
@@ -52,25 +52,25 @@ B<Options>:
 =over 4
 
 =item B<--help>
-    Print a brief help message and exit.
+    Print a brief help message and exits.
 
 =item B<--band>
-    Will be printed only this band's tracks
+    Will be print only this band's tracks
 
 =item B<--year>
-    Will be printed only this year's albums
+    Will be print only this year's albums
 
 =item B<--album>
-    Will be printed only this album's tracks
+    Will be print only this album's tracks
 
 =item B<--track>
-    Will be printed only this tracks
+    Will be print only this tracks
 
 =item B<--format>
-    Will be printed only this format's tracks
+    Will be print only this format's tracks
 
 =item B<--sort>
-    Sort table by this column
+    Sorting table by this column
     columns: band, year, album, track, format
 
 =item B<--columns>
