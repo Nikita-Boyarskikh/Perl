@@ -61,9 +61,7 @@ sub prepare_result {
 	my $name = $_[0]->{name};
 	my @max_len_strs = ();
 	my @result = ();
-	for (1 .. scalar @$name) {
-		push @max_len_strs, 0;
-	}
+	push @max_len_strs, 0 for (@$name);
 	for my $rec(@$table) {
 		if(
 			(!defined $options->{band} || $options->{band} eq $rec->{band}) &&
@@ -75,9 +73,7 @@ sub prepare_result {
 			my @row = ();
 			for (0 .. scalar @$name - 1) {
 				my $cur_name = $name->[$_];
-				if ( $max_len_strs[$_] < length($rec->{$cur_name}) ) {
-					$max_len_strs[$_] = length($rec->{$cur_name});
-				}
+				$max_len_strs[$_] = length($rec->{$cur_name}) if $max_len_strs[$_] < length($rec->{$cur_name});
 				push @row, $rec->{$cur_name};
 			}
 			push @result, [@row];
