@@ -10,8 +10,8 @@ use Local::MusicLibrary;
 BEGIN {if($]<5.018){package experimental; use warnings::register;}} no warnings 'experimental';
 
 my %options;
-GetOptions(\%options, "band:s", "year:s", "album:s", "track:s", "format:s",
-"sort:s", "columns:s", "man", "help") or die "Переданы неверные параметры! Используйте --help\n";
+eval { GetOptions(\%options, "band:s", "year:s", "album:s", "track:s", "format:s",
+"sort:s", "columns:s", "man", "help") }; # or die "Переданы неверные параметры! Используйте --help\n";
 pod2usage(-verbose => 2) if $options{man};
 pod2usage(1) if $options{help};
 Local::MusicLibrary->setopt(%options);

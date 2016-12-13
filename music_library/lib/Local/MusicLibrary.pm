@@ -52,7 +52,7 @@ sub add_data($) {
 		defined $record{track} && defined $record{format}) {
 			push @table, \%record;
 	} else {
-			warn "Wrong format";
+			# warn "Wrong format";
 	}
 }
 
