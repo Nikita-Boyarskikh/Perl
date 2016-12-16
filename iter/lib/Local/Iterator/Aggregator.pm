@@ -23,22 +23,18 @@ Local::Iterator::Aggregator - aggregator of iterator
 =cut
 
 has 'chunk_length', is => 'rw', default => 1;
-has 'iterator', is => 'rw', required => 1,
-	trigger => sub {
-		my $self = shift;
-		$self->array( [@{ $self->iterator->array }]);
-	};
+has 'iterator', is => 'rw', required => 1;
 
 sub next {
 	my $self = shift;
 	my @res = ();
-	if ($self->counter == scalar @{ $self->array }) {
+	if ($self->counter == @{ $self->iterator->array }) {
 		return (undef, 1);
 	}
-	print ref($self->chunk_length);
 	for (1..$self->chunk_length) {
-		if ($self->counter < scalar @{ $self->array }) {
-			push @res, $self->array->[$self->counter];
+		my ($elem, $status) = $self->iterator->next();
+		if(!$status) {
+			push @res, $elem;
 			$self->counter($self->counter+1);
 		}
 		else {

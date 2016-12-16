@@ -22,20 +22,24 @@ Local::Iterator::File - file-based iterator
 
 extends 'Local::Iterator';
 
-has 'fh', is => 'rw',
-	trigger => sub {
-		my $self = shift;
-		while (not eof $self->fh) {
-			chomp(my $line = readline($self->fh));
-			push(@{$self->array}, $line);
-		}
-	};
-		
-has 'filename', is => 'rw',
-	trigger => sub {
-		my $self = shift;
-		open(my $fh, '<', $self->filename) or die $!;
-		$self->fh($fh);
-	};
+has 'fh', is => 'rw', required => 1;		
+has 'filename', is => 'rw';
+	
+sub BUILDARGS {
+	my ($class, %hash) = @_;
+	if(defined $hash{filename}) {
+		open(my $fh, '<', $hash{filename}) or die "Can't open ".@{$hash{filename}}.' '.$!;
+		$hash{fh} = $fh;
+		$hash{filename} = undef;
+	}
+	return \%hash;
+}
+
+sub next {
+	my $self = shift;
+	my $l = readline($self->fh) // return (undef, 1);
+    chomp $l;
+    return ($l, 0);
+};
 
 1;

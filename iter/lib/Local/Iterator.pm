@@ -13,11 +13,11 @@ Local::Iterator - base abstract iterator
 
 =head1 VERSION
 
-Version 1.00
+Version 3.00
 
 =cut
 
-our $VERSION = '2.00';
+our $VERSION = '3.00';
 
 =head1 SYNOPSIS
 	
@@ -35,7 +35,7 @@ has 'counter', is => 'rw', default => 0;
 
 sub next {
 	my $self = shift;
-	if ($self->counter == scalar @{ $self->array }) {
+	if ($self->counter == @{ $self->array }) {
 		return (undef, 1);
 	}
 	my $elem = $self->array->[$self->counter];
