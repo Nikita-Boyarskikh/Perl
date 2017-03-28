@@ -1,0 +1,129 @@
+#!/usr/bin/perl
+
+use IPC::Open3;
+use Getopt::Long qw(GetOptions);
+use Pod::Usage qw(pod2usage);
+
+$SIG{__WARN__} = sub { print STDERR "ERROR:\nUse -h or --help option to see more information\n"; exit 1; };
+my ($leak_check, $help, $man, $fix_valgring_bug);
+GetOptions("leak-check" => \$leak_check, "h|help" => \$help, "man" => \$man, "cpp" => \$fix_valgrind_bug);
+$SIG{__WARN__} = "DEFAULT";
+
+if($help) {
+    pod2usage(-verbose=>1);
+    exit 0;
+}
+
+if($man) {
+    pod2usage(-verbose=>2);
+    exit 0;
+}
+
+if(@ARGV < 1) {
+    print STDERR "ERROR: Wrong number of arguments\nUse -h or --help option to see more information\n";
+    exit 1;
+}
+
+my $file;
+if(not open($file, '<', $ARGV[0])) {
+    print STDERR "File " . $ARGV[0] . " not found ($!)\n";
+    exit 1;
+}
+
+my @strings = <$file>;
+
+my $tests;
+my $test_num = 0;
+my $err_num = 0;
+for my $str(@strings) {
+    $test_num++;
+    my ($test, $answer) = split /=/, $str, 2;
+    (my $valgrind, $test) = split /|/, $test, 2;
+    $test = substr $test, 1;
+    my ($write, $read);
+    if(defined $leak_check and $valgrind eq '+') {
+        if(not open3($write, $read, $_, 'valgrind --leak-check=full --show-leak-kinds=all -q ./a.out 2>&1')) {
+            print STDERR "Can't run valgrind $!\n";
+            exit 1;
+        }
+    } else {
+        if(not open3($write, $read, $_, './a.out 2>&1')) {
+            print STDERR "Can't run program $!\n";
+            exit 1;
+        }
+    }
+    print $write $test if($write);
+    close $write;
+    my @answers = <$read> if($read);
+    if(defined $fix_valgrind_bug and $valgrind eq '+') {
+        @answers = @answers[0 .. $#answers - 8];
+    }
+    my $result = join " ", @answers;
+    chomp $result;
+    chomp $answer;
+    if($result ne $answer) {
+        print STDERR "Test " . $test_num . " failed: expected '" . $answer . "', but got '" . $result . "'\n";
+        $err_num++;
+    }
+}
+
+if($err_num > 0) {
+    print STDERR "\nNOT OK\nTests failed: $err_num/$test_num\n";
+    exit 1;
+}
+
+if($test_num != scalar @strings) {
+    print STDERR "\nNOT OK\nFailed $err_num/" . scalar @strings . "\n";
+    exit 1;
+}
+print "\nOK\nAll tests successfull\n";
+exit 0;
+
+__END__
+=encoding utf-8
+
+=head1 NAME
+
+    valgrind_test - testing program with valgrind leak check and test file
+
+=head1 VERSION
+
+    Version 1.00
+
+=head1 SYNOPSIS
+
+valgrind_test [options] test_file
+
+B<test_file> - file with your test data
+
+B<Format>:
+
+    test1=answer1
+    test2=answer2
+    ...
+    testN=answerN
+
+B<options>:
+
+    --help|-h
+    --leak-check
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<--help>
+    Print a this help message and exits.
+
+=item B<--leak-check>
+    Use valgrind to test with checking memory leak.
+
+=back
+
+=head1 DESCRIPTION
+
+    This program will read the given input file
+    and test a.out program with test in this file.
+
+=cut
+
