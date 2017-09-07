@@ -1,0 +1,5 @@
+host: 100.100.148.231
+port: 2345
+trace: false
+nick: "calculator"
+bot_id: "calculator"
